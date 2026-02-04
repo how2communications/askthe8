@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>askthe8.com</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Uncial+Antiqua&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: radial-gradient(circle at top, #0a1430, #02060f);
+  overflow: hidden;
+  font-family: "IM Fell English SC", serif;
+  position: relative;
+}
+
+/* lava lamp overlay */
+body::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  background: radial-gradient(circle at 30% 30%, rgba(50,80,200,0.2), rgba(10,10,30,0.6));
+  mix-blend-mode: screen;
+  animation: backgroundFlow 20s ease-in-out infinite alternate;
+  z-index:0;
+}
+
+@keyframes backgroundFlow {
+  0% {background-position:0% 0%;}
+  50% {background-position:100% 50%;}
+  100% {background-position:0% 100%;}
+}
+
+/* drifting particles */
+body::before {
+  content: "";
+  position: absolute;
+  inset: -60%;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.08) 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,0.06) 0 3px, transparent 4px),
+    radial-gradient(circle at 40% 80%, rgba(255,255,255,0.05) 0 2px, transparent 3px);
+  background-size: 240px 240px;
+  animation: drift 60s linear infinite;
+  z-index:0;
+}
+
+@keyframes drift {
+  from { transform: translateY(0); }
+  to { transform: translateY(-240px); }
+}
+
+.wrapper {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px;
+  box-sizing: border-box;
+  perspective: 1000px;
+}
+
+.title {
+  color: #d6e3ff;
+  font-size: 36px;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+  text-shadow: 0 0 18px rgba(140,180,255,0.4);
+}
+
+/* subtitle under title */
+.subtitle {
+  color: #a0b8ff;
+  font-size: 18px;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+  font-style: italic;
+  text-shadow: 0 0 12px rgba(140,180,255,0.35);
+}
+
+/* ball */
+.ball {
+  position: relative;
+  width: 390px;
+  height: 390px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #3a3a3a, #000 70%);
+  box-shadow:
+    inset -20px -30px 50px rgba(0,0,0,0.9),
+    inset 20px 20px 40px rgba(255,255,255,0.05),
+    0 40px 80px rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  transform-style: preserve-3d;
+  transition: transform 0.35s ease;
+}
+
+.ball.shake {
+  animation: shake 0.9s ease-in-out;
+}
+
+@keyframes shake {
+  0% { transform: rotateX(0deg) rotateY(0deg); }
+  20% { transform: rotateX(-6deg) rotateY(5deg); }
+  40% { transform: rotateX(5deg) rotateY(-4deg); }
+  60% { transform: rotateX(-4deg) rotateY(3deg); }
+  80% { transform: rotateX(3deg) rotateY(-2deg); }
+  100% { transform: rotateX(0deg) rotateY(0deg); }
+}
+
+/* liquid window */
+.liquid {
+  width: 210px;
+  height: 210px;
+  border-radius: 50%;
+  background: radial-gradient(circle at top, #0d1f5a, #050b24);
+  box-shadow:
+    inset 0 0 40px rgba(90,140,255,0.45),
+    inset 0 -12px 30px rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* shimmer effect */
+.liquid::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.08), transparent 70%);
+  mix-blend-mode: screen;
+  opacity: 0.15;
+  animation: shimmer 6s ease-in-out infinite alternate;
+}
+
+@keyframes shimmer {
+  from { transform: translate(0,0) scale(1); opacity: 0.15; }
+  to { transform: translate(8px,-8px) scale(1.05); opacity: 0.2; }
+}
+
+/* rising bubbles */
+.bubble {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  box-shadow: 0 0 4px rgba(255,255,255,0.5);
+  animation: rise 4s linear infinite;
+}
+
+@keyframes rise {
+  0% { transform: translateY(100%); opacity:0.3; }
+  50% { opacity:0.6; }
+  100% { transform: translateY(-20%); opacity:0; }
+}
+
+/* triangle container */
+.triangle {
+  width: 140px;
+  height: 120px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  box-sizing: border-box;
+  opacity: 0;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+/* static triangle base glow */
+.triangle::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+  background: radial-gradient(circle at center, rgba(22,47,133,0.85), #0a1440 80%);
+  filter: blur(6px);
+  z-index: 1;
+}
+
+/* animated glowing aura */
+.triangle::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+  background: radial-gradient(circle at center, rgba(90,140,255,0.7), transparent 70%);
+  filter: blur(12px);
+  opacity:0;
+  transition: opacity 0.45s ease;
+  z-index:0;
+}
+
+.triangle.visible {
+  opacity: 1;
+  animation: floatRotate 5s ease-in-out infinite alternate;
+}
+
+.triangle.visible::after {
+  opacity:1;
+  animation: glowPulse 2s ease-in-out infinite alternate;
+}
+
+/* float/rotate animation */
+@keyframes floatRotate {
+  0% { transform: translateY(0px) rotate(-2deg); }
+  50% { transform: translateY(3px) rotate(2deg); }
+  100% { transform: translateY(0px) rotate(-2deg); }
+}
+
+/* glow pulse animation */
+@keyframes glowPulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.5; }
+}
+
+/* text inside triangle */
+.text {
+  position: relative;
+  z-index: 2;
+  color: #ffd;
+  font-family: "IM Fell English SC", serif;
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: center;
+  max-width: 85%;
+  word-wrap: break-word;
+}
+
+/* spark */
+.spark {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ffd700;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* footer */
+.footer {
+  position: absolute;
+  bottom: 8px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.3);
+  font-family: "IM Fell English SC", serif;
+  text-align: center;
+}
+
+.footer div { line-height: 1.2; }
+</style>
+</head>
+
+<body>
+<div class="wrapper">
+  <div class="title">askthe8.com</div>
+  <div class="subtitle" id="subtitle"></div>
+
+  <div class="ball" id="ball">
+    <div class="liquid" id="liquid">
+      <div class="triangle" id="triangle">
+        <div class="text" id="text">Ask again.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>For Molly</div>
+    <div>© Thomas Howlett 2026</div>
+  </div>
+</div>
+
+<script>
+// subtitle array (funny/playful)
+const subtitles = [
+  "Think hard… or just wing it",
+  "Ask anything, but expect sass",
+  "Do you really want to know?",
+  "I hope it’s a good question",
+  "No refunds on bad decisions",
+  "Magic, mischief, or maybe both",
+  "Shake wisely, grasshopper",
+  "Ask fast, the triangle is impatient",
+  "Answers may cause laughter",
+  "Do it… but keep it polite"
+];
+document.getElementById("subtitle").textContent = subtitles[Math.floor(Math.random()*subtitles.length)];
+
+// standard answers
+const standardAnswers = [
+  "Yes. Don’t over-celebrate.",
+  "No. Not today.",
+  "Maybe. Sit with it.",
+  "You already know.",
+  "Yes. You’ll manage.",
+  "No. You’ll resent this.",
+  "Ask again tomorrow.",
+  "Lower the stakes.",
+  "The answer is hiding behind your tea cup.",
+  "Consult the stars, they are busy.",
+  "Think twice, then ask again.",
+  "Absolutely… but quietly.",
+  "Definitely not.",
+  "Probably yes, maybe no.",
+  "Ask your dog first.",
+  "It’s a mystery.",
+  "That depends on your socks.",
+  "Try shaking it again.",
+  "Only if you’re lucky.",
+  "No comment.",
+  "Don’t count on it.",
+  "Almost certainly.",
+  "I would say yes.",
+  "I would say no.",
+  "Better not tell you now.",
+  "Very doubtful.",
+  "Signs point to yes.",
+  "Signs point to no.",
+  "Concentrate and ask again.",
+  "Absolutely.",
+  "Not in this lifetime.",
+  "Could be, could be not.",
+  "Perhaps… if the wind allows.",
+  "Your guess is as good as mine.",
+  "Only in your dreams.",
+  "Soon… maybe.",
+  "Definitely maybe.",
+  "I don’t think so.",
+  "Ask a friend.",
+  "The answer is obvious… isn’t it?"
+];
+
+// rare answers
+const rareAnswers = [
+  {text:"This isn’t the real question.", font:"Uncial Antiqua", color:"#ffd700"},
+  {text:"Move on.", font:"Cormorant Garamond", color:"#ff88aa"},
+  {text:"42… but also maybe yes.", font:"Cormorant Garamond", color:"#88ffdd"},
+  {text:"The universe smiles.", font:"Uncial Antiqua", color:"#ffcc33"},
+  {text:"Time will tell… eventually.", font:"Cormorant Garamond", color:"#ff99ff"},
+  {text:"Do something unexpected.", font:"Uncial Antiqua", color:"#88ff99"},
+  {text:"Fortune favours you… maybe.", font:"Cormorant Garamond", color:"#ffaa55"},
+  {text:"Not what you expected, is it?", font:"Uncial Antiqua", color:"#ffdd88"},
+  {text:"Question declined.", font:"Cormorant Garamond", color:"#88aaff"},
+  {text:"Reality disagrees.", font:"Uncial Antiqua", color:"#ff88dd"}
+];
+
+const ball = document.getElementById("ball");
+const triangle = document.getElementById("triangle");
+const textEl = document.getElementById("text");
+const liquid = document.getElementById("liquid");
+let locked = false;
+
+// create bubbles
+for(let i=0;i<8;i++){
+  const bubble = document.createElement('div');
+  bubble.className='bubble';
+  bubble.style.left=Math.random()*100+'%';
+  bubble.style.animationDuration=(3+Math.random()*2)+'s';
+  bubble.style.animationDelay=(Math.random()*3)+'s';
+  liquid.appendChild(bubble);
+}
+
+// spark helper
+function createSpark() {
+  const spark = document.createElement('div');
+  spark.className = 'spark';
+  spark.style.left = Math.random()*100 + '%';
+  spark.style.top = Math.random()*100 + '%';
+  liquid.appendChild(spark);
+  spark.animate([
+    {opacity: 1, transform: 'scale(1)'},
+    {opacity: 0, transform: 'scale(0.5)'}
+  ], {duration: 600, easing:'ease-out'});
+  setTimeout(()=>liquid.removeChild(spark),600);
+}
+
+// fit text inside triangle
+function fitText(textEl, container) {
+    let fontSize = 18;
+    textEl.style.fontSize = fontSize + 'px';
+    const maxWidth = container.clientWidth * 0.85;
+    const maxHeight = container.clientHeight * 0.7;
+    while ((textEl.scrollWidth > maxWidth || textEl.scrollHeight > maxHeight) && fontSize > 10) {
+        fontSize -= 0.5;
+        textEl.style.fontSize = fontSize + 'px';
+    }
+}
+
+ball.addEventListener("click", () => {
+  if(locked) return;
+  locked = true;
+
+  triangle.classList.remove("visible");
+  ball.classList.add("shake");
+
+  const tiltX = (Math.random() * 8 - 4);
+  const tiltY = (Math.random() * 8 - 4);
+  ball.style.transform = `scale(0.97) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+
+  setTimeout(async ()=> {
+    // Decide if rare or standard (~10% chance for rare)
+    let answer;
+    if(Math.random() < 0.10){ // 10% chance
+      answer = rareAnswers[Math.floor(Math.random()*rareAnswers.length)];
+      textEl.style.fontFamily = answer.font;
+      textEl.style.color = answer.color;
+      textEl.style.textShadow = `0 0 2px #000, 0 0 22px ${answer.color}, 0 0 12px ${answer.color}`;
+      for(let i=0;i<8;i++) setTimeout(createSpark,i*80);
+    } else {
+      answer = {text: standardAnswers[Math.floor(Math.random()*standardAnswers.length)]};
+      textEl.style.fontFamily = '"IM Fell English SC", serif';
+      textEl.style.color = "#ffd";
+      textEl.style.textShadow = "0 0 12px rgba(140,180,255,0.7)";
+    }
+
+    textEl.textContent = answer.text;
+    await document.fonts.ready;
+    fitText(textEl, triangle);
+    triangle.classList.add("visible");
+
+    triangle.style.transition = "transform 0.25s ease-in-out";
+    let offsetX = (Math.random()-0.5)*4;
+    let offsetY = (Math.random()-0.5)*3;
+    triangle.style.transform = `translate(${offsetX}px,${offsetY}px)`;
+    setTimeout(()=>{ triangle.style.transform = `translate(0,0)`; },120);
+
+  },1100);
+
+  setTimeout(()=>{
+    ball.classList.remove("shake");
+    ball.style.transform = "scale(1) rotateX(0deg) rotateY(0deg)";
+    locked=false;
+  },1900);
+});
+</script>
+</body>
+</html>
