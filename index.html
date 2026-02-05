@@ -56,12 +56,12 @@ body::before {
 .wrapper {
   position: relative;
   z-index: 1;
-  min-height: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 80px 20px 140px 20px; /* extra bottom padding for buttons */
+  padding: 80px;
   box-sizing: border-box;
   perspective: 1000px;
 }
@@ -70,7 +70,7 @@ body::before {
   color: #d6e3ff;
   font-size: 36px;
   letter-spacing: 2px;
-  margin-bottom: 30px; /* moved slightly higher from 8 ball */
+  margin-bottom: 30px; /* increased spacing from ball */
   text-shadow: 0 0 18px rgba(140,180,255,0.4);
 }
 
@@ -244,7 +244,7 @@ body::before {
 
 .footer {
   position: absolute;
-  bottom: 40px; /* leave space for donate button */
+  bottom: 40px;
   font-size: 12px;
   color: rgba(255,255,255,0.3);
   font-family: "IM Fell English SC", serif;
@@ -253,52 +253,51 @@ body::before {
 
 .footer div { line-height: 1.2; }
 
+/* Mute button top right */
+#muteBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(50,50,70,0.6);
+  color: #ffd;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-family: "IM Fell English SC", serif;
+  cursor: pointer;
+  z-index: 2;
+  font-size: 14px;
+}
+
+/* Feed the 8 Ball bottom right */
+#donateBtn {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(50,50,70,0.6);
+  color: #ffd;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-family: "IM Fell English SC", serif;
+  cursor: pointer;
+  z-index: 2;
+  font-size: 14px;
+}
 #quoteContainer {
-  margin-top: 25px;
+  margin-top: 20px;
   color: #ffd;
   font-family: "IM Fell English SC", serif;
   font-size: 16px;
-  font-style: italic;
   text-align: center;
-  max-width: 80%;
-  text-shadow: 0 0 12px rgba(140,180,255,0.7);
-}
-
-/* Buttons */
-#muteBtn {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  background: rgba(22,47,133,0.8);
-  color: #ffd;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: "IM Fell English SC", serif;
-  font-size: 110%;
-  z-index: 10;
-}
-
-#donateBtn {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  background: rgba(90,140,255,0.85);
-  color: #ffd;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: "IM Fell English SC", serif;
-  font-size: 110%;
-  z-index: 10;
+  max-width: 90%;
 }
 </style>
 </head>
 <body>
 
 <div class="wrapper">
+  <button id="muteBtn">Mute</button>
   <div class="title">askthe8.com</div>
   <div class="subtitle" id="subtitle"></div>
 
@@ -310,23 +309,22 @@ body::before {
     </div>
   </div>
 
-  <div id="quoteContainer">Quote of the Day loading…</div>
+  <div id="quoteContainer">Quote of the Day will appear here</div>
 
   <div class="footer">
     <div>For Molly</div>
     <div>© How2Communications 2026</div>
   </div>
-</div>
 
-<button id="muteBtn">Mute</button>
-<button id="donateBtn"></button>
+  <button id="donateBtn" onclick="window.open('https://www.paypal.com/ncp/payment/LWFKBHGYSB5VQ','_blank')">Feed the 8 Ball</button>
+</div>
 
 <!-- Audio -->
 <audio id="shakeSound" src="shake.mp3" preload="auto"></audio>
 <audio id="rareSound" src="rare.mp3" preload="auto"></audio>
 
 <script>
-// --- Subtitle ---
+// Subtitles
 const subtitles = [
   "Think hard… or just wing it",
   "Ask anything, the 8 ball knows",
@@ -341,48 +339,16 @@ const subtitles = [
 ];
 document.getElementById("subtitle").textContent = subtitles[Math.floor(Math.random()*subtitles.length)];
 
-// --- 8 Ball Logic ---
+// Standard and rare answers
 const standardAnswers = [
-  "Yes. Don’t over-celebrate.",
-  "No. Not today.",
-  "Maybe. Sit with it.",
-  "You already know.",
-  "Yes. You’ll manage.",
-  "No. You’ll resent this.",
-  "Ask again tomorrow.",
-  "Lower the stakes.",
-  "The answer is hiding behind your tea cup.",
-  "Consult the stars, they are busy.",
-  "Focus twice, then ask again.",
-  "Absolutely… but quietly.",
-  "Definitely not.",
-  "Probably yes, maybe no.",
-  "Ask your dog first.",
-  "It’s a mystery.",
-  "That depends on your socks.",
-  "Try shaking it again.",
-  "Only if you’re lucky.",
-  "No comment.",
-  "Don’t count on it.",
-  "Almost certainly.",
-  "I would say yes.",
-  "I would say no.",
-  "Better not tell you now.",
-  "Very doubtful.",
-  "Signs point to yes.",
-  "Signs point to no.",
-  "Focus and ask again.",
-  "Absolutely.",
-  "Not in this lifetime.",
-  "Could be, could be not.",
-  "Perhaps… if the wind allows.",
-  "Your guess is as good as mine.",
-  "Only in your dreams.",
-  "Soon… maybe.",
-  "Definitely maybe.",
-  "I don’t think so.",
-  "Ask a friend.",
-  "The answer is obvious… isn’t it?"
+  "Yes. Don’t over-celebrate.","No. Not today.","Maybe. Sit with it.","You already know.","Yes. You’ll manage.",
+  "No. You’ll resent this.","Ask again tomorrow.","Lower the stakes.","The answer is hiding behind your tea cup.",
+  "Consult the stars, they are busy.","Focus twice, then ask again.","Absolutely… but quietly.","Definitely not.",
+  "Probably yes, maybe no.","Ask your dog first.","It’s a mystery.","That depends on your socks.","Try shaking it again.",
+  "Only if you’re lucky.","No comment.","Don’t count on it.","Almost certainly.","I would say yes.","I would say no.",
+  "Better not tell you now.","Very doubtful.","Signs point to yes.","Signs point to no.","Focus and ask again.",
+  "Absolutely.","Not in this lifetime.","Could be, could be not.","Perhaps… if the wind allows.","Your guess is as good as mine.",
+  "Only in your dreams.","Soon… maybe.","Definitely maybe.","I don’t think so.","Ask a friend.","The answer is obvious… isn’t it?"
 ];
 
 const rareAnswers = [
@@ -395,7 +361,7 @@ const rareAnswers = [
   {text:"Not what you expected, is it?", font:"Uncial Antiqua", color:"#ffdd88"},
   {text:"Question declined.", font:"Cormorant Garamond", color:"#88aaff"},
   {text:"Reality disagrees.", font:"Uncial Antiqua", color:"#ff88dd"},
-  {text:"Ask Molly", font:"Uncial Antiqua", color:"#ff4444"}
+  {text:"Ask Molly", font:"Uncial Antiqua", color:"#ff4444"} // super rare
 ];
 
 const ball = document.getElementById("ball");
@@ -404,12 +370,13 @@ const textEl = document.getElementById("text");
 const liquid = document.getElementById("liquid");
 let locked = false;
 
+// Audio
 const shakeSound = document.getElementById("shakeSound");
 const rareSound = document.getElementById("rareSound");
 shakeSound.volume = 0.2;
 rareSound.volume = 0.6;
 
-// bubbles
+// Create bubbles
 for(let i=0;i<8;i++){
   const bubble = document.createElement('div');
   bubble.className='bubble';
@@ -419,7 +386,7 @@ for(let i=0;i<8;i++){
   liquid.appendChild(bubble);
 }
 
-// sparks
+// Sparks
 function createSpark() {
   const spark = document.createElement('div');
   spark.className = 'spark';
@@ -430,6 +397,7 @@ function createSpark() {
   setTimeout(()=>liquid.removeChild(spark),600);
 }
 
+// Fit text inside triangle
 function fitText(textEl, container) {
     let fontSize = 18;
     textEl.style.fontSize = fontSize + 'px';
@@ -441,10 +409,10 @@ function fitText(textEl, container) {
     }
 }
 
+// Shake ball
 ball.addEventListener("click", () => {
   if(locked) return;
   locked = true;
-
   triangle.classList.remove("visible");
   ball.classList.add("shake");
   shakeSound.currentTime = 0;
@@ -462,16 +430,14 @@ ball.addEventListener("click", () => {
       textEl.style.fontFamily = answer.font;
       textEl.style.color = answer.color;
       textEl.style.textShadow = `0 0 2px #000, 0 0 22px ${answer.color}, 0 0 12px ${answer.color}`;
-      rareSound.currentTime = 0;
-      rareSound.play();
+      rareSound.currentTime = 0; rareSound.play();
       for(let i=0;i<8;i++) setTimeout(createSpark,i*80);
     } else if(rareRoll < 0.11){
       answer = rareAnswers[Math.floor(Math.random()*(rareAnswers.length-1))];
       textEl.style.fontFamily = answer.font;
       textEl.style.color = answer.color;
       textEl.style.textShadow = `0 0 2px #000, 0 0 22px ${answer.color}, 0 0 12px ${answer.color}`;
-      rareSound.currentTime = 0;
-      rareSound.play();
+      rareSound.currentTime = 0; rareSound.play();
       for(let i=0;i<8;i++) setTimeout(createSpark,i*80);
     } else {
       answer = {text: standardAnswers[Math.floor(Math.random()*standardAnswers.length)]};
@@ -479,63 +445,85 @@ ball.addEventListener("click", () => {
       textEl.style.color = "#ffd";
       textEl.style.textShadow = "0 0 12px rgba(140,180,255,0.7)";
     }
-
     textEl.textContent = answer.text;
     await document.fonts.ready;
     fitText(textEl, triangle);
     triangle.classList.add("visible");
-
     triangle.style.transition = "transform 0.25s ease-in-out";
     let offsetX = (Math.random()-0.5)*4;
     let offsetY = (Math.random()-0.5)*3;
     triangle.style.transform = `translate(${offsetX}px,${offsetY}px)`;
     setTimeout(()=>{ triangle.style.transform = `translate(0,0)`; },120);
-
   },1100);
 
-  setTimeout(()=>{ ball.classList.remove("shake"); ball.style.transform = "scale(1) rotateX(0deg) rotateY(0deg)"; locked=false; },1900);
+  setTimeout(()=>{
+    ball.classList.remove("shake");
+    ball.style.transform = "scale(1) rotateX(0deg) rotateY(0deg)";
+    locked=false;
+  },1900);
 });
-ball.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') ball.click(); });
+ball.addEventListener('keydown', (e) => { if(e.key==='Enter'||e.key===' ') ball.click(); });
 
-// --- Mute Button ---
-const muteBtn = document.getElementById("muteBtn");
+// Mute/unmute
+const muteBtn = document.getElementById('muteBtn');
 let muted = false;
-muteBtn.addEventListener("click", ()=> {
+muteBtn.addEventListener('click', () => {
   muted = !muted;
   shakeSound.muted = muted;
   rareSound.muted = muted;
   muteBtn.textContent = muted ? "Unmute" : "Mute";
 });
 
-// --- Donate Button ---
-const donateBtn = document.getElementById("donateBtn");
-const donateTexts = ["Feed the Magic","Keep the 8 happy","Tip the 8 ball","Magic fuel"];
-donateBtn.textContent = donateTexts[Math.floor(Math.random()*donateTexts.length)];
-donateBtn.addEventListener("click", ()=> {
-  window.open("https://www.paypal.com/ncp/payment/LWFKBHGYSB5VQ","_blank");
-});
+// Daily quote
+const quotes = [
+  '"Be yourself; everyone else is already taken." — Oscar Wilde',
+  '"The only way to do great work is to love what you do." — Steve Jobs',
+  '"Life is what happens when you\'re busy making other plans." — John Lennon',
+  '"Do not take life too seriously. You will never get out of it alive." — Elbert Hubbard',
+  '"Happiness depends upon ourselves." — Aristotle',
+  '"In the middle of difficulty lies opportunity." — Albert Einstein',
+  '"The purpose of our lives is to be happy." — Dalai Lama',
+  '"Turn your wounds into wisdom." — Oprah Winfrey',
+  '"Dream big and dare to fail." — Norman Vaughan',
+  '"What you do speaks so loudly that I cannot hear what you say." — Ralph Waldo Emerson',
+  '"You miss 100% of the shots you don’t take." — Wayne Gretzky',
+  '"It does not matter how slowly you go as long as you do not stop." — Confucius',
+  '"Everything you can imagine is real." — Pablo Picasso',
+  '"The best way out is always through." — Robert Frost',
+  '"Do what you can, with what you have, where you are." — Theodore Roosevelt',
+  '"Believe you can and you\'re halfway there." — Theodore Roosevelt',
+  '"Act as if what you do makes a difference. It does." — William James',
+  '"Success is not final, failure is not fatal: It is the courage to continue that counts." — Winston Churchill',
+  '"It always seems impossible until it’s done." — Nelson Mandela',
+  '"Try to be a rainbow in someone’s cloud." — Maya Angelou',
+  '"Life is short, and it is up to you to make it sweet." — Sarah Louise Delany',
+  '"Be the change that you wish to see in the world." — Mahatma Gandhi',
+  '"Do what you love, love what you do." — Ray Bradbury',
+  '"Courage is resistance to fear, mastery of fear—not absence of fear." — Mark Twain',
+  '"A smooth sea never made a skilled sailor." — Franklin D. Roosevelt',
+  '"Keep your face always toward the sunshine—and shadows will fall behind you." — Walt Whitman',
+  '"What lies behind us and what lies before us are tiny matters compared to what lies within us." — Ralph Waldo Emerson',
+  '"Don’t watch the clock; do what it does. Keep going." — Sam Levenson',
+  '"Opportunities don’t happen, you create them." — Chris Grosser',
+  '"Magic is believing in yourself." — Johann Wolfgang von Goethe'
+];
 
-// --- Quote of the Day ---
-async function loadQuote() {
-  const cached = localStorage.getItem("quoteCache");
-  const cachedTime = localStorage.getItem("quoteCacheTime");
-  const now = new Date().getTime();
-  if(cached && cachedTime && now - cachedTime < 24*60*60*1000) {
-    document.getElementById("quoteContainer").textContent = cached;
-    return;
-  }
-  try {
-    const res = await fetch("https://api.quotable.io/random");
-    const data = await res.json();
-    const quoteText = `"${data.content}" — ${data.author}`;
-    document.getElementById("quoteContainer").textContent = quoteText;
-    localStorage.setItem("quoteCache", quoteText);
-    localStorage.setItem("quoteCacheTime", now);
-  } catch(e){
-    document.getElementById("quoteContainer").textContent = "Could not load today's quote…";
+function displayQuote() {
+  const quoteEl = document.getElementById('quoteContainer');
+  const now = Date.now();
+  const saved = JSON.parse(localStorage.getItem('quoteOfTheDay') || "{}");
+
+  if(saved.timestamp && now - saved.timestamp < 24*60*60*1000){
+    quoteEl.textContent = saved.quote;
+  } else {
+    const dayIndex = new Date().getDate() % quotes.length;
+    const quote = quotes[dayIndex];
+    quoteEl.textContent = quote;
+    localStorage.setItem('quoteOfTheDay', JSON.stringify({quote,timestamp:now}));
   }
 }
-loadQuote();
+
+displayQuote();
 </script>
 </body>
 </html>
