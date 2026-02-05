@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>askthe8.com</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Ask the 8: the playful magic 8 ball that gives answers to your questions with a dash of mystery and fun.">
 
 <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Uncial+Antiqua&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
 
@@ -18,7 +19,6 @@ html, body {
   position: relative;
 }
 
-/* lava lamp overlay */
 body::after {
   content:"";
   position:absolute;
@@ -35,7 +35,6 @@ body::after {
   100% {background-position:0% 100%;}
 }
 
-/* drifting particles */
 body::before {
   content: "";
   position: absolute;
@@ -75,7 +74,6 @@ body::before {
   text-shadow: 0 0 18px rgba(140,180,255,0.4);
 }
 
-/* subtitle under title */
 .subtitle {
   color: #a0b8ff;
   font-size: 18px;
@@ -85,11 +83,12 @@ body::before {
   text-shadow: 0 0 12px rgba(140,180,255,0.35);
 }
 
-/* ball */
 .ball {
   position: relative;
-  width: 390px;
-  height: 390px;
+  width: 80vw;
+  max-width: 390px;
+  height: 80vw;
+  max-height: 390px;
   border-radius: 50%;
   background: radial-gradient(circle at 30% 30%, #3a3a3a, #000 70%);
   box-shadow:
@@ -118,7 +117,6 @@ body::before {
   100% { transform: rotateX(0deg) rotateY(0deg); }
 }
 
-/* liquid window */
 .liquid {
   width: 210px;
   height: 210px;
@@ -134,7 +132,6 @@ body::before {
   position: relative;
 }
 
-/* shimmer effect */
 .liquid::after {
   content: "";
   position: absolute;
@@ -150,7 +147,6 @@ body::before {
   to { transform: translate(8px,-8px) scale(1.05); opacity: 0.2; }
 }
 
-/* rising bubbles */
 .bubble {
   position: absolute;
   width: 5px;
@@ -167,7 +163,6 @@ body::before {
   100% { transform: translateY(-20%); opacity:0; }
 }
 
-/* triangle container */
 .triangle {
   width: 140px;
   height: 120px;
@@ -181,7 +176,6 @@ body::before {
   transition: opacity 0.45s ease, transform 0.45s ease;
 }
 
-/* static triangle base glow */
 .triangle::before {
   content: "";
   position: absolute;
@@ -192,7 +186,6 @@ body::before {
   z-index: 1;
 }
 
-/* animated glowing aura */
 .triangle::after {
   content:"";
   position:absolute;
@@ -215,21 +208,18 @@ body::before {
   animation: glowPulse 2s ease-in-out infinite alternate;
 }
 
-/* float/rotate animation */
 @keyframes floatRotate {
   0% { transform: translateY(0px) rotate(-2deg); }
   50% { transform: translateY(3px) rotate(2deg); }
   100% { transform: translateY(0px) rotate(-2deg); }
 }
 
-/* glow pulse animation */
 @keyframes glowPulse {
   0% { opacity: 0.5; }
   50% { opacity: 0.8; }
   100% { opacity: 0.5; }
 }
 
-/* text inside triangle */
 .text {
   position: relative;
   z-index: 2;
@@ -242,7 +232,6 @@ body::before {
   word-wrap: break-word;
 }
 
-/* spark */
 .spark {
   position: absolute;
   width: 4px;
@@ -253,7 +242,6 @@ body::before {
   pointer-events: none;
 }
 
-/* footer */
 .footer {
   position: absolute;
   bottom: 8px;
@@ -264,15 +252,16 @@ body::before {
 }
 
 .footer div { line-height: 1.2; }
+
 </style>
 </head>
-
 <body>
+
 <div class="wrapper">
   <div class="title">askthe8.com</div>
   <div class="subtitle" id="subtitle"></div>
 
-  <div class="ball" id="ball">
+  <div class="ball" id="ball" role="button" aria-label="Magic 8 ball, click to shake" tabindex="0">
     <div class="liquid" id="liquid">
       <div class="triangle" id="triangle">
         <div class="text" id="text">Ask again.</div>
@@ -286,11 +275,15 @@ body::before {
   </div>
 </div>
 
+<!-- Audio -->
+<audio id="shakeSound" src="shake.mp3" preload="auto"></audio>
+<audio id="rareSound" src="rare.mp3" preload="auto"></audio>
+
 <script>
-// subtitle array (funny/playful)
+// subtitle array
 const subtitles = [
   "Think hard… or just wing it",
-  "Ask anything, but expect sass",
+  "Ask anything, the 8 ball knows",
   "Do you really want to know?",
   "I hope it’s a good question",
   "No refunds on bad decisions",
@@ -314,7 +307,7 @@ const standardAnswers = [
   "Lower the stakes.",
   "The answer is hiding behind your tea cup.",
   "Consult the stars, they are busy.",
-  "Think twice, then ask again.",
+  "Focus twice, then ask again.",
   "Absolutely… but quietly.",
   "Definitely not.",
   "Probably yes, maybe no.",
@@ -332,7 +325,7 @@ const standardAnswers = [
   "Very doubtful.",
   "Signs point to yes.",
   "Signs point to no.",
-  "Concentrate and ask again.",
+  "Focus and ask again.",
   "Absolutely.",
   "Not in this lifetime.",
   "Could be, could be not.",
@@ -350,14 +343,14 @@ const standardAnswers = [
 const rareAnswers = [
   {text:"This isn’t the real question.", font:"Uncial Antiqua", color:"#ffd700"},
   {text:"Move on.", font:"Cormorant Garamond", color:"#ff88aa"},
-  {text:"42… but also maybe yes.", font:"Cormorant Garamond", color:"#88ffdd"},
   {text:"The universe smiles.", font:"Uncial Antiqua", color:"#ffcc33"},
   {text:"Time will tell… eventually.", font:"Cormorant Garamond", color:"#ff99ff"},
-  {text:"Do something unexpected.", font:"Uncial Antiqua", color:"#88ff99"},
+  {text:"Do something unexpected.", font:"Uncial Antiquond", color:"#88ff99"},
   {text:"Fortune favours you… maybe.", font:"Cormorant Garamond", color:"#ffaa55"},
   {text:"Not what you expected, is it?", font:"Uncial Antiqua", color:"#ffdd88"},
   {text:"Question declined.", font:"Cormorant Garamond", color:"#88aaff"},
-  {text:"Reality disagrees.", font:"Uncial Antiqua", color:"#ff88dd"}
+  {text:"Reality disagrees.", font:"Uncial Antiqua", color:"#ff88dd"},
+  {text:"Ask Molly", font:"Uncial Antiqua", color:"#ff4444"} // super super rare
 ];
 
 const ball = document.getElementById("ball");
@@ -365,6 +358,14 @@ const triangle = document.getElementById("triangle");
 const textEl = document.getElementById("text");
 const liquid = document.getElementById("liquid");
 let locked = false;
+
+// audio
+const shakeSound = document.getElementById("shakeSound");
+const rareSound = document.getElementById("rareSound");
+
+// set volumes
+shakeSound.volume = 0.2; // almost quiet shake
+rareSound.volume = 0.6;
 
 // create bubbles
 for(let i=0;i<8;i++){
@@ -408,19 +409,32 @@ ball.addEventListener("click", () => {
 
   triangle.classList.remove("visible");
   ball.classList.add("shake");
+  shakeSound.currentTime = 0;
+  shakeSound.play();
 
   const tiltX = (Math.random() * 8 - 4);
   const tiltY = (Math.random() * 8 - 4);
   ball.style.transform = `scale(0.97) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
 
   setTimeout(async ()=> {
-    // Decide if rare or standard (~10% chance for rare)
+    // Decide if rare or standard (~10% chance for rare, super rare 1%)
     let answer;
-    if(Math.random() < 0.10){ // 10% chance
-      answer = rareAnswers[Math.floor(Math.random()*rareAnswers.length)];
+    let rareRoll = Math.random();
+    if(rareRoll < 0.01){
+      answer = rareAnswers[rareAnswers.length-1]; // "Ask Molly"
       textEl.style.fontFamily = answer.font;
       textEl.style.color = answer.color;
       textEl.style.textShadow = `0 0 2px #000, 0 0 22px ${answer.color}, 0 0 12px ${answer.color}`;
+      rareSound.currentTime = 0;
+      rareSound.play();
+      for(let i=0;i<8;i++) setTimeout(createSpark,i*80);
+    } else if(rareRoll < 0.11){
+      answer = rareAnswers[Math.floor(Math.random()*(rareAnswers.length-1))];
+      textEl.style.fontFamily = answer.font;
+      textEl.style.color = answer.color;
+      textEl.style.textShadow = `0 0 2px #000, 0 0 22px ${answer.color}, 0 0 12px ${answer.color}`;
+      rareSound.currentTime = 0;
+      rareSound.play();
       for(let i=0;i<8;i++) setTimeout(createSpark,i*80);
     } else {
       answer = {text: standardAnswers[Math.floor(Math.random()*standardAnswers.length)]};
@@ -448,6 +462,9 @@ ball.addEventListener("click", () => {
     locked=false;
   },1900);
 });
+
+// keyboard support
+ball.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') ball.click(); });
 </script>
 </body>
 </html>
