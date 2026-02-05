@@ -8,10 +8,6 @@
 
 <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Uncial+Antiqua&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
 
-<!-- Google AdSense verification script -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2193236653346678"
-        crossorigin="anonymous"></script>
-  
 <style>
 html, body {
   margin: 0;
@@ -60,12 +56,12 @@ body::before {
 .wrapper {
   position: relative;
   z-index: 1;
-  height: 100%;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 80px;
+  padding: 80px 20px 140px 20px; /* extra bottom padding for buttons */
   box-sizing: border-box;
   perspective: 1000px;
 }
@@ -74,7 +70,7 @@ body::before {
   color: #d6e3ff;
   font-size: 36px;
   letter-spacing: 2px;
-  margin-bottom: 10px;
+  margin-bottom: 30px; /* moved slightly higher from 8 ball */
   text-shadow: 0 0 18px rgba(140,180,255,0.4);
 }
 
@@ -248,7 +244,7 @@ body::before {
 
 .footer {
   position: absolute;
-  bottom: 8px;
+  bottom: 40px; /* leave space for donate button */
   font-size: 12px;
   color: rgba(255,255,255,0.3);
   font-family: "IM Fell English SC", serif;
@@ -257,6 +253,47 @@ body::before {
 
 .footer div { line-height: 1.2; }
 
+#quoteContainer {
+  margin-top: 25px;
+  color: #ffd;
+  font-family: "IM Fell English SC", serif;
+  font-size: 16px;
+  font-style: italic;
+  text-align: center;
+  max-width: 80%;
+  text-shadow: 0 0 12px rgba(140,180,255,0.7);
+}
+
+/* Buttons */
+#muteBtn {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: rgba(22,47,133,0.8);
+  color: #ffd;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: "IM Fell English SC", serif;
+  font-size: 110%;
+  z-index: 10;
+}
+
+#donateBtn {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(90,140,255,0.85);
+  color: #ffd;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: "IM Fell English SC", serif;
+  font-size: 110%;
+  z-index: 10;
+}
 </style>
 </head>
 <body>
@@ -273,18 +310,23 @@ body::before {
     </div>
   </div>
 
+  <div id="quoteContainer">Quote of the Day loading…</div>
+
   <div class="footer">
     <div>For Molly</div>
-    <div>© Thomas Howlett 2026</div>
+    <div>© How2Communications 2026</div>
   </div>
 </div>
+
+<button id="muteBtn">Mute</button>
+<button id="donateBtn"></button>
 
 <!-- Audio -->
 <audio id="shakeSound" src="shake.mp3" preload="auto"></audio>
 <audio id="rareSound" src="rare.mp3" preload="auto"></audio>
 
 <script>
-// subtitle array
+// --- Subtitle ---
 const subtitles = [
   "Think hard… or just wing it",
   "Ask anything, the 8 ball knows",
@@ -299,7 +341,7 @@ const subtitles = [
 ];
 document.getElementById("subtitle").textContent = subtitles[Math.floor(Math.random()*subtitles.length)];
 
-// standard answers
+// --- 8 Ball Logic ---
 const standardAnswers = [
   "Yes. Don’t over-celebrate.",
   "No. Not today.",
@@ -343,7 +385,6 @@ const standardAnswers = [
   "The answer is obvious… isn’t it?"
 ];
 
-// rare answers
 const rareAnswers = [
   {text:"This isn’t the real question.", font:"Uncial Antiqua", color:"#ffd700"},
   {text:"Move on.", font:"Cormorant Garamond", color:"#ff88aa"},
@@ -354,7 +395,7 @@ const rareAnswers = [
   {text:"Not what you expected, is it?", font:"Uncial Antiqua", color:"#ffdd88"},
   {text:"Question declined.", font:"Cormorant Garamond", color:"#88aaff"},
   {text:"Reality disagrees.", font:"Uncial Antiqua", color:"#ff88dd"},
-  {text:"Ask Molly", font:"Uncial Antiqua", color:"#ff4444"} // super super rare
+  {text:"Ask Molly", font:"Uncial Antiqua", color:"#ff4444"}
 ];
 
 const ball = document.getElementById("ball");
@@ -363,15 +404,12 @@ const textEl = document.getElementById("text");
 const liquid = document.getElementById("liquid");
 let locked = false;
 
-// audio
 const shakeSound = document.getElementById("shakeSound");
 const rareSound = document.getElementById("rareSound");
-
-// set volumes
-shakeSound.volume = 0.2; // almost quiet shake
+shakeSound.volume = 0.2;
 rareSound.volume = 0.6;
 
-// create bubbles
+// bubbles
 for(let i=0;i<8;i++){
   const bubble = document.createElement('div');
   bubble.className='bubble';
@@ -381,21 +419,17 @@ for(let i=0;i<8;i++){
   liquid.appendChild(bubble);
 }
 
-// spark helper
+// sparks
 function createSpark() {
   const spark = document.createElement('div');
   spark.className = 'spark';
   spark.style.left = Math.random()*100 + '%';
   spark.style.top = Math.random()*100 + '%';
   liquid.appendChild(spark);
-  spark.animate([
-    {opacity: 1, transform: 'scale(1)'},
-    {opacity: 0, transform: 'scale(0.5)'}
-  ], {duration: 600, easing:'ease-out'});
+  spark.animate([{opacity:1, transform:'scale(1)'},{opacity:0, transform:'scale(0.5)'}],{duration:600,easing:'ease-out'});
   setTimeout(()=>liquid.removeChild(spark),600);
 }
 
-// fit text inside triangle
 function fitText(textEl, container) {
     let fontSize = 18;
     textEl.style.fontSize = fontSize + 'px';
@@ -421,11 +455,10 @@ ball.addEventListener("click", () => {
   ball.style.transform = `scale(0.97) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
 
   setTimeout(async ()=> {
-    // Decide if rare or standard (~10% chance for rare, super rare 1%)
     let answer;
     let rareRoll = Math.random();
     if(rareRoll < 0.01){
-      answer = rareAnswers[rareAnswers.length-1]; // "Ask Molly"
+      answer = rareAnswers[rareAnswers.length-1];
       textEl.style.fontFamily = answer.font;
       textEl.style.color = answer.color;
       textEl.style.textShadow = `0 0 2px #000, 0 0 22px ${answer.color}, 0 0 12px ${answer.color}`;
@@ -460,16 +493,49 @@ ball.addEventListener("click", () => {
 
   },1100);
 
-  setTimeout(()=>{
-    ball.classList.remove("shake");
-    ball.style.transform = "scale(1) rotateX(0deg) rotateY(0deg)";
-    locked=false;
-  },1900);
+  setTimeout(()=>{ ball.classList.remove("shake"); ball.style.transform = "scale(1) rotateX(0deg) rotateY(0deg)"; locked=false; },1900);
+});
+ball.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') ball.click(); });
+
+// --- Mute Button ---
+const muteBtn = document.getElementById("muteBtn");
+let muted = false;
+muteBtn.addEventListener("click", ()=> {
+  muted = !muted;
+  shakeSound.muted = muted;
+  rareSound.muted = muted;
+  muteBtn.textContent = muted ? "Unmute" : "Mute";
 });
 
-// keyboard support
-ball.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') ball.click(); });
+// --- Donate Button ---
+const donateBtn = document.getElementById("donateBtn");
+const donateTexts = ["Feed the Magic","Keep the 8 happy","Tip the 8 ball","Magic fuel"];
+donateBtn.textContent = donateTexts[Math.floor(Math.random()*donateTexts.length)];
+donateBtn.addEventListener("click", ()=> {
+  window.open("https://www.paypal.com/ncp/payment/LWFKBHGYSB5VQ","_blank");
+});
+
+// --- Quote of the Day ---
+async function loadQuote() {
+  const cached = localStorage.getItem("quoteCache");
+  const cachedTime = localStorage.getItem("quoteCacheTime");
+  const now = new Date().getTime();
+  if(cached && cachedTime && now - cachedTime < 24*60*60*1000) {
+    document.getElementById("quoteContainer").textContent = cached;
+    return;
+  }
+  try {
+    const res = await fetch("https://api.quotable.io/random");
+    const data = await res.json();
+    const quoteText = `"${data.content}" — ${data.author}`;
+    document.getElementById("quoteContainer").textContent = quoteText;
+    localStorage.setItem("quoteCache", quoteText);
+    localStorage.setItem("quoteCacheTime", now);
+  } catch(e){
+    document.getElementById("quoteContainer").textContent = "Could not load today's quote…";
+  }
+}
+loadQuote();
 </script>
 </body>
 </html>
-
